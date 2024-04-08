@@ -83,6 +83,7 @@ export const Department = ({t}) => {
                 description: "",
                 id_societies: "",
             });
+            toast.info('Department updated succesfully');
         } catch (error) {
             console.error("Failed to update department:", error);
         }
@@ -184,8 +185,8 @@ export const Department = ({t}) => {
                                 <tr key={department.id}>
                                     <td>{department.coded}</td>
                                     <td>{department.description}</td>
-                                    <td>{department.society.company_name}</td>
-                                    <td><img width="50px" src={`http://localhost:8000/storage/society/logo/${department.society.logo}`} alt="Society Logo" /></td>
+                                    <td>{department.society?.company_name}</td>
+                                    <td><img width="50px" src={`http://localhost:8000/storage/society/logo/${department.society?.logo}`} alt="Society Logo" /></td>
                                     <td>
                                         <button className="btn btn-primary ml-2" onClick={() => editDepartment(department)}>
                                             <FontAwesomeIcon icon={faEdit} />
