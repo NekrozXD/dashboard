@@ -191,7 +191,7 @@ export  const Employee= ({ t }) => {
             const response = await axios.post("http://localhost:8000/api/employees", newEmployee);
             setEmployees([...employees, response.data]); 
             
-            window.location.reload()
+            //window.location.reload()
             setNewEmployee({
                 name: "",
                 firstname: "",
@@ -199,8 +199,8 @@ export  const Employee= ({ t }) => {
                 id_societies: "",
                 id_work_hours: "",
             });
-            // toast.success('Employee created successfully');
-            window.location.reload()
+             toast.success('Employee created successfully');
+            //window.location.reload()
             // toast.success('Employee created successfully')
         } catch (error) {
             console.error("Failed to create employee:", error);
@@ -374,12 +374,13 @@ export  const Employee= ({ t }) => {
                         ) : (
                             employees.map((employee) => (
                                 <tr key={employee.id}>
+                                    
                                     <td>{employee.name}</td>
                                     <td>{employee.firstname}</td>
-                                    <td><p onClick={() => handleClickWorkhour(employee.workhour.id, employee.workhour.nom, employee.workhour.total_hour, employee.name, employee.firstname)} className='workhour-emp clickable'>{employee.workhour.nom}</p></td>
-                                    <td>{employee.society.company_name}</td>
-                                    <td><img width="50px" src={`http://localhost:8000/storage/society/logo/${employee.society.logo}`} alt="Society Logo" /></td>
-                                    <td>{employee.department.description}</td>
+                                   <td><p onClick={() => handleClickWorkhour(employee.workhour?.id, employee.workhour?.nom, employee.workhour?.total_hour, employee.name, employee.firstname)} className='workhour-emp clickable'>{employee.workhour?.nom}</p></td>
+                                    <td>{employee.society?.company_name}</td>
+                                    <td><img width="50px" src={`http://localhost:8000/storage/society/logo/${employee.society?.logo}`} alt="Society Logo" /></td>
+                                    <td>{employee.department?.description}</td>
                                     <td>
                                         <button className="btn btn-primary ml-2" onClick={() => editEmployee(employee)}>
                                             <FontAwesomeIcon icon={faEdit} />
