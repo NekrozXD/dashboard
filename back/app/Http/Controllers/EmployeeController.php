@@ -20,7 +20,7 @@ class EmployeeController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'firstname' => 'required',
-            // 'image'=>'required|image',
+            'image'=>'required|image',
             'id_departments' => 'required',
             'id_societies' => 'required',
             'id_work_hours' => 'required',
@@ -30,13 +30,13 @@ class EmployeeController extends Controller
         }
 
         try {
-        //     $imageName = Str::random().'.'.$request->image->getClientOriginalExtension();
-        // Storage::disk('public')->putFileAs('employee/image', $request->image,$imageName);
+            $imageName = Str::random().'.'.$request->image->getClientOriginalExtension();
+        Storage::disk('public')->putFileAs('employee/image', $request->image,$imageName);
 
             $employee = new Employee();
             $employee->name = $request->input('name');
             $employee->firstname = $request->input('firstname');
-            // $employee->image = $imageName;
+            $employee->image = $imageName;
             $employee->id_departments = $request->input('id_departments');
             $employee->id_societies = $request->input('id_societies');
             $employee->id_work_hours = $request->input('id_work_hours');
@@ -67,17 +67,17 @@ class EmployeeController extends Controller
         $employee = Employee::find($id);
         $employee->name = $request->input('name');
         $employee->firstname = $request->input('firstname');
-        // if ($request->hasFile('image')) {
-        //     // Remove old image if it exists
-        //     if ($employee->image) {
-        //         Storage::disk('public')->delete("employee/image/{$employee->image}");
-        //     }
+        if ($request->hasFile('image')) {
+            // Remove old image if it exists
+            if ($employee->image) {
+                Storage::disk('public')->delete("employee/image/{$employee->image}");
+            }
 
-        //     // Save new image
-        //     $logoName = Str::random() . '.' . $request->image->getClientOriginalExtension();
-        //     $request->image->storeAs('employee/image', $logoName, 'public');
-        //     $employee->image = $logoName;
-        // }
+            // Save new image
+            $logoName = Str::random() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->storeAs('employee/image', $logoName, 'public');
+            $employee->image = $logoName;
+        }
         $employee->id_departments = $request->input('id_departments');
         $employee->id_societies = $request->input('id_societies');
         $employee->id_work_hours = $request->input('id_work_hours');
