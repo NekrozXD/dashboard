@@ -67,6 +67,8 @@ export const Department = ({t}) => {
                 description: "",
                 id_societies: "",
             });
+            fetchDepartments();
+            fetchSocieties();
             toast.success('Department created succesfully');
         } catch (error) {
             console.error("Failed to create department:", error);
@@ -84,6 +86,8 @@ export const Department = ({t}) => {
                 id_societies: "",
             });
             toast.info('Department updated succesfully');
+            fetchDepartments();
+            fetchSocieties();
         } catch (error) {
             console.error("Failed to update department:", error);
         }
