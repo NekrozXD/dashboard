@@ -1,0 +1,4 @@
+.user-card td,.user-card th{
+    border-bottom: 1px solid grey;
+    padding: 10px;
+}

@@ -1,0 +1,4 @@
+.society-table td, .society-table th{
+    border-bottom: 1px solid grey;
+    height: 70px;
+}
