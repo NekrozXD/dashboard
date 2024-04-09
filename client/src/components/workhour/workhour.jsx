@@ -106,12 +106,12 @@ const WorkhourForm = ({t}) => {
             total_hour: '1',
             delay_tolerance: ''
         });
-        Swal.fire({
-            title: "Success!",
-            text: "Workhour created succesfully !!",
-            icon: "success"
-          });
-        toast.info('workhour lines created succesfully');
+        // Swal.fire({
+        //     title: "Success!",
+        //     text: "Workhour created succesfully !!",
+        //     icon: "success"
+        //   });
+        toast.success('workhour lines created succesfully');
     };
     
     const calculateTotalMinutes = (day) => {

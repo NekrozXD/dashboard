@@ -94,14 +94,50 @@ export const Department = ({t}) => {
     };
 
     const deleteDepartment = async (id) => {
-        console.log("Deleting department with ID:", id);
-        try {
-            await axios.delete(`http://localhost:8000/api/departments/${id}`);
-            setDepartments(departments.filter((department) => department.id !== id));
-        } catch (error) {
-            console.error("Failed to delete department:", error);
+    //     console.log("Deleting department with ID:", id);
+    //     try {
+    //         await axios.delete(`http://localhost:8000/api/departments/${id}`);
+    //         setDepartments(departments.filter((department) => department.id !== id));
+    //     } catch (error) {
+    //         console.error("Failed to delete department:", error);
+    //     }
+    // };
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'this action is irreversible!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await axios.delete(`http://localhost:8000/api/departments/${id}`);
+                setDepartments(departments.filter((department) => department.id !== id));
+                Swal.fire(
+                    'Deleted!',
+                    'Department has been deleted.',
+                    'success'
+                );
+            } catch (error) {
+                console.error("Failed to delete department:", error);
+                Swal.fire(
+                    'Error!',
+                    'Failed to delete department.',
+                    'error'
+                );
+            }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire(
+                'Cancelled',
+                'Department deletion has been cancelled.',
+                'error'
+            );
         }
-    };
+    });
+};
+
 
     return (
        
