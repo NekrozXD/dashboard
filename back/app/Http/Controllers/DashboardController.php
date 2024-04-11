@@ -13,6 +13,9 @@ class DashboardController extends Controller
     }
 
     public function liste() {
+        
+        // $date = Carbon::createFromFormat('Y-m-d', '2024-04-11');
+        // $jour = $date->format('l');
         $liste = $this->get()->getAll();
         return response()->json(['liste' => $liste]);
     }
