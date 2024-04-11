@@ -3,9 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ModelPrincipal;
 
 class DashboardController extends Controller
 {
+    public function get(){
+        $data=new ModelPrincipal();
+        return $data;
+    }
+
+    public function liste() {
+        $liste = $this->get()->getAll();
+        return response()->json(['liste' => $liste]);
+    }
+
     public function index () {
         $employees= Employee::all();
         $attendanceInfo = [];

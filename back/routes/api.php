@@ -7,6 +7,7 @@ use App\Http\Controllers\SocietyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\WorkhourController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\WorkhourlineController;
 
@@ -64,3 +65,7 @@ Route::post('materials', [MaterialController::class, 'store']);
 Route::get('materials/{id}', [MaterialController::class, 'show']);
 Route::patch('materials/{id}', [MaterialController::class, 'update']);
 Route::delete('materials/{id}', [MaterialController::class, 'destroy']);
+
+//dashboard
+Route::get('liste', [DashboardController::class, 'liste']);
+
