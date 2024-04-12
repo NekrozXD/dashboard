@@ -153,7 +153,7 @@ const WorkhourForm = ({t}) => {
                 <FormGroup>
                     <FormLabel>{t('Select days')}:</FormLabel>
                     <Row>
-                    {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday','sunday'].map((day) => (
+                    {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'].map((day) => (
                         <Col key={day}>
                             <div
                                 className={`day-checkbox ${selectedDays.includes(day) ? 'checked' : ''}`}
