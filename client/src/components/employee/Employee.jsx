@@ -273,7 +273,7 @@ export const Employee = ({ t }) => {
                             <Form.Label>{t('Name')}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter name"
+                                placeholder={t('Name')}
                                 value={isEditing ? editedEmployee.name : newEmployee.name}
                                 onChange={(e) => (isEditing ? setEditedEmployee({ ...editedEmployee, name: e.target.value }) : setNewEmployee({ ...newEmployee, name: e.target.value }))}
                             />
@@ -282,7 +282,7 @@ export const Employee = ({ t }) => {
                             <Form.Label>{t('Firstname')}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter firstame"
+                                placeholder={t('Firstname')}
                                 value={isEditing ? editedEmployee.firstname : newEmployee.firstname}
                                 onChange={(e) => (isEditing ? setEditedEmployee({ ...editedEmployee, firstname: e.target.value }) : setNewEmployee({ ...newEmployee, firstname: e.target.value }))}
                             />

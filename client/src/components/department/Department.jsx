@@ -67,6 +67,8 @@ export const Department = ({t}) => {
                 description: "",
                 id_societies: "",
             });
+            fetchDepartments();
+            fetchSocieties();
             toast.success('Department created succesfully');
         } catch (error) {
             console.error("Failed to create department:", error);
@@ -83,20 +85,59 @@ export const Department = ({t}) => {
                 description: "",
                 id_societies: "",
             });
+            toast.info('Department updated succesfully');
+            fetchDepartments();
+            fetchSocieties();
         } catch (error) {
             console.error("Failed to update department:", error);
         }
     };
 
     const deleteDepartment = async (id) => {
-        console.log("Deleting department with ID:", id);
-        try {
-            await axios.delete(`http://localhost:8000/api/departments/${id}`);
-            setDepartments(departments.filter((department) => department.id !== id));
-        } catch (error) {
-            console.error("Failed to delete department:", error);
+    //     console.log("Deleting department with ID:", id);
+    //     try {
+    //         await axios.delete(`http://localhost:8000/api/departments/${id}`);
+    //         setDepartments(departments.filter((department) => department.id !== id));
+    //     } catch (error) {
+    //         console.error("Failed to delete department:", error);
+    //     }
+    // };
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'this action is irreversible!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await axios.delete(`http://localhost:8000/api/departments/${id}`);
+                setDepartments(departments.filter((department) => department.id !== id));
+                Swal.fire(
+                    'Deleted!',
+                    'Department has been deleted.',
+                    'success'
+                );
+            } catch (error) {
+                console.error("Failed to delete department:", error);
+                Swal.fire(
+                    'Error!',
+                    'Failed to delete department.',
+                    'error'
+                );
+            }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire(
+                'Cancelled',
+                'Department deletion has been cancelled.',
+                'error'
+            );
         }
-    };
+    });
+};
+
 
     return (
        
@@ -184,8 +225,8 @@ export const Department = ({t}) => {
                                 <tr key={department.id}>
                                     <td>{department.coded}</td>
                                     <td>{department.description}</td>
-                                    <td>{department.society.company_name}</td>
-                                    <td><img width="50px" src={`http://localhost:8000/storage/society/logo/${department.society.logo}`} alt="Society Logo" /></td>
+                                    <td>{department.society?.company_name}</td>
+                                    <td><img width="50px" src={`http://localhost:8000/storage/society/logo/${department.society?.logo}`} alt="Society Logo" /></td>
                                     <td>
                                         <button className="btn btn-primary ml-2" onClick={() => editDepartment(department)}>
                                             <FontAwesomeIcon icon={faEdit} />

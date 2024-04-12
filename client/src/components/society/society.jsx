@@ -41,10 +41,11 @@ export const Society = ({ t }) => {
       formData.append('logo', logo)
   
       await axios.post(`http://localhost:8000/api/societies`, formData).then(({data})=>{
-        Swal.fire({
-          icon:"success",
-          text:data.message
-        })
+        // Swal.fire({
+        //   icon:"success",
+        //   text:data.message
+        // })
+        toast.success('Society created successfully');
       }).catch(({response})=>{
         if(response.status===422){
           setValidationError(response.data.errors)
@@ -122,11 +123,12 @@ export const Society = ({ t }) => {
         }
     
         await axios.post(`http://localhost:8000/api/societies/${isEditing}`, formData).then(({data})=>{
-          Swal.fire({
-            icon:"success",
-            text:data.message,
+          // Swal.fire({
+          //   icon:"success",
+          //   text:data.message,
             
-          })
+          // })
+          toast.info('Society updated successfully');
           fetchSocieties()
           setCompany_name('');
           setAddress('');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Pointing;
 use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
@@ -19,5 +20,10 @@ class Employee extends Model
     public function workhour()
     {
         return $this->belongsTo(Workhour::class, 'id_work_hours');
+    }
+
+    public function pointing()
+    {
+        return $this->hasMany(Pointing::class, 'id_employees');
     }
 }

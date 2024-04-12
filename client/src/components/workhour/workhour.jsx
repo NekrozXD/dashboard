@@ -106,12 +106,12 @@ const WorkhourForm = ({t}) => {
             total_hour: '1',
             delay_tolerance: ''
         });
-        Swal.fire({
-            title: "Success!",
-            text: "Workhour created succesfully !!",
-            icon: "success"
-          });
-        toast.info('workhour lines created succesfully');
+        // Swal.fire({
+        //     title: "Success!",
+        //     text: "Workhour created succesfully !!",
+        //     icon: "success"
+        //   });
+        toast.success('workhour lines created succesfully');
     };
     
     const calculateTotalMinutes = (day) => {
@@ -153,7 +153,7 @@ const WorkhourForm = ({t}) => {
                 <FormGroup>
                     <FormLabel>{t('Select days')}:</FormLabel>
                     <Row>
-                    {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday','sunday'].map((day) => (
+                    {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'].map((day) => (
                         <Col key={day}>
                             <div
                                 className={`day-checkbox ${selectedDays.includes(day) ? 'checked' : ''}`}
@@ -231,7 +231,7 @@ const WorkhourForm = ({t}) => {
                         </Row>
                     ))}
                 </Container>    
-                    <Button onClick={handleCreateWorkhourLines}>Create workhourlines</Button>
+                    <Button onClick={handleCreateWorkhourLines}>{t('Create workhourlines')}</Button>
                 </>
             )}
              {isLoading && 
