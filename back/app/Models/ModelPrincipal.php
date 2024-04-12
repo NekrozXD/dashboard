@@ -45,11 +45,8 @@ class ModelPrincipal extends Model
         $filteredData = [];
     
         foreach ($data as $row) {
-            // Pour chaque ligne, appelez la méthode convertir() avec la valeur de checkin_am_pointings
             $jour = $this->convertir($row->checkin_am_pointings);
-            // Vérifiez si le jour de la semaine correspond à celui dans wl.jour
             if ($row->jour === $jour) {
-                // Si le jour correspond, ajoutez la ligne à $filteredData
                 $filteredData[] = $row;
             }
         }
@@ -62,9 +59,11 @@ class ModelPrincipal extends Model
 
 
     public function take($id) {
-        $sql="SELECT wh.id AS id_work_hours, 
+        $sql="SELECT 
+                wh.id AS id_work_hours, 
                 wh.nom AS work_hours_nom,wh.total_hour,
                 wh.delay_tolerance,
+                wl.jour,
                 wl.checkin_am AS checkin_am_workhourlines,
                 wl.checkout_am AS checkout_am_workhourlines,
                 wl.checkin_pm AS checkin_pm_workhourlines,
@@ -81,8 +80,53 @@ class ModelPrincipal extends Model
                 workhours wh
                 INNER JOIN workhourlines wl ON wh.id = wl.id_work_hours
                 INNER JOIN employees e ON wh.id = e.id_work_hours
-                INNER JOIN pointings p ON e.id = p.id_employees";
-        $data=DB::select($sql);
-        return $data;
+                INNER JOIN pointings p ON e.id = p.id_employees
+            where id_employees=$id and DATE(p.checkin_am) = CURRENT_DATE
+            ";
+        $data = DB::select($sql);
+    
+        $filteredData = [];
+    
+        foreach ($data as $row) {
+            $jour = $this->convertir($row->checkin_am_pointings);
+            if ($row->jour === $jour) {
+                $filteredData[] = $row;
+            }
+        }
+    
+        return $filteredData;
+
+    }
+
+    public function retard() {
+        $date = $this->getAll(); // Exemple d'une date donnée
+        foreach ($date as $item) {
+            $new = $item['checkin_am_pointings'];
+            $hour= $item['checkin_am_workhourlines'];
+        }
+
+        $heure = Carbon::parse($new)->format('H:i:s'); // Parse la date et obtient uniquement l'heure
+        
+         // Heures à soustraire
+        $heure1 = Carbon::createFromFormat('H:i:s',$hour);
+        $heure2 = Carbon::createFromFormat('H:i:s', $heure);
+
+        // Convertir les heures et les minutes en minutes
+        $total_minutes1 = $heure1->hour * 60 + $heure1->minute;
+        $total_minutes2 = $heure2->hour * 60 + $heure2->minute;
+
+        // Soustraction des minutes
+        $diff_minutes = $total_minutes1 - $total_minutes2;
+        $tolerance= $this->take($id)->delay_tolerance;
+        $valiny= $diff_minutes + $tolerance;
+        // Affichage du résultat
+        //echo "Différence : $diff_minutes minutes";
+        return $valiny;
+    }
+
+    public function count_employee() {
+        $count = DB::table('employees')->count();
+        $count = intval($count);
+        return $count;
     }
 }

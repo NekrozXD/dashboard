@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\ModelPrincipal;
 
@@ -13,9 +15,6 @@ class DashboardController extends Controller
     }
 
     public function liste() {
-        
-        // $date = Carbon::createFromFormat('Y-m-d', '2024-04-11');
-        // $jour = $date->format('l');
         $liste = $this->get()->getAll();
         return response()->json(['liste' => $liste]);
     }
@@ -23,9 +22,12 @@ class DashboardController extends Controller
     public function index () {
         $employees= Employee::all();
         $attendanceInfo = [];
-        
+        $employee_total = $this->get()->count_employee();
+        $employee_present = 0;
+        $employee_non_retard = 0;
+        $employee_retard = 0;
         foreach ($employees as $employee) {
-            $data1= $this->get()->take($employee->id_employees);
+            $data1= $this->get()->take($employee->id);
             
                 if (count($data1) == 0) {
                     $presence = false; //absent
@@ -36,7 +38,11 @@ class DashboardController extends Controller
                     $presence = true; //présent
                     $absence = false; //présent
                     
+                    
                     foreach ($data1 as $pointing) {
+
+                    $employee_present = $employee_present + 1;
+
                     $checkin = $pointing->checkin_am_pointings;
                     $tolerance=$pointing->delay_tolerance;
                     $workHourLine=$pointing->checkin_am_workhourlines;
@@ -54,22 +60,25 @@ class DashboardController extends Controller
                     if ($valiny<0) {
                         $retard=true;
                         $value_retard= -$valiny; 
+                        $employee_retard = $employee_retard + 1;
                     } else {
                         $retard=false;
                         $value_retard='NULL';
+                        $employee_non_retard= $employee_non_retard + 1;
                     }
                }
             }
+            $employee_absent= $employee_total - $employee_present;
             $attendanceInfo[] = [
+                'id_employe'=>$employee->id,
                 'employee' => $employee->name,
                 'presence' => $presence,
                 'absence' =>$absence,
                 'retard' =>$retard,
                 'value_retard' =>$value_retard,
             ];
-        
         }
-            dump($attendanceInfo);
-
+        return response()->json(['attendance'=>$attendanceInfo , 'employee_total'=>$employee_total, 'employee_present'=>$employee_present, 'employee_absent'=>$employee_absent, 'employee_non_retard'=>$employee_non_retard,
+        'employee_retard'=>$employee_retard]);
     }
 }

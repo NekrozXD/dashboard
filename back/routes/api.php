@@ -67,5 +67,5 @@ Route::patch('materials/{id}', [MaterialController::class, 'update']);
 Route::delete('materials/{id}', [MaterialController::class, 'destroy']);
 
 //dashboard
-Route::get('liste', [DashboardController::class, 'liste']);
+Route::get('liste', [DashboardController::class, 'index']);
 
