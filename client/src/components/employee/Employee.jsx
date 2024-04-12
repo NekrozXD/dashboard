@@ -1,37 +1,35 @@
-import React , { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Container, Row, Col, Form, Button, ListGroup, Card, CardHeader } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit,faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
-
-//import './employee.css';
 
 import './emp.css';
 
-
-export  const Employee= ({ t }) => {
+export const Employee = ({ t }) => {
     const [societies, setSocieties] = useState([]);
-    const [departments, setDepartments] = useState([]); 
+    const [departments, setDepartments] = useState([]);
     const [workhours, setWorkhours] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [isEditing, setIsEditing] = useState(null);
     const [newEmployee, setNewEmployee] = useState({
-        name: "",
-        firstname: "",
-        id_departments:"",
-        id_societies: "",
-        id_work_hours:"",
+        name: '',
+        firstname: '',
+        id_departments: '',
+        id_societies: '',
+        id_work_hours: '',
     });
     const [editedEmployee, setEditedEmployee] = useState({
-        name: "",
-        firstname: "",
-        id_departments:"",
-        id_societies: "",
-        id_work_hours:"",
+        name: '',
+        firstname: '',
+        id_departments: '',
+        id_societies: '',
+        id_work_hours: '',
     });
+    const [selectedEmployees, setSelectedEmployees] = useState([]);
 
     const editEmployee = (employee) => {
         setIsEditing(employee.id);
@@ -45,50 +43,39 @@ export  const Employee= ({ t }) => {
     };
 
     useEffect(() => {
-
-       fetchEmployees()
+        fetchEmployees();
 
         const intervalId = setInterval(() => {
             fetchEmployees();
         }, 1000);
-    
-        return () => {
-            clearInterval(intervalId); 
-        };
 
+        return () => {
+            clearInterval(intervalId);
+        };
     }, []);
-    
+
     const fetchEmployees = async () => {
         try {
-            const response = await axios.get("http://localhost:8000/api/employees");
+            const response = await axios.get('http://localhost:8000/api/employees');
             setEmployees(response.data.employees);
-            
         } catch (error) {
             if (error.response.status === 429) {
-                // toast.error("Error message", {
-                //     position: "top-center",
-                //     style: {
-                //       backgroundColor: "black",
-                //       color: "white"
-                //     }
-                //   }); 
-                console.error("Failed to fetch employees:", error);   
-                  
-                await new Promise(resolve => setTimeout(resolve, 5000)); 
-                fetchEmployees(); 
+                console.error('Failed to fetch employees:', error);
+
+                await new Promise((resolve) => setTimeout(resolve, 5000));
+                fetchEmployees();
             } else {
-                console.error("Failed to fetch employees:", error);
+                console.error('Failed to fetch employees:', error);
             }
         }
     };
-    
-    
+
     const fetchSocieties = async () => {
         try {
-            const response = await axios.get("http://localhost:8000/api/societies");
+            const response = await axios.get('http://localhost:8000/api/societies');
             setSocieties(response.data);
         } catch (error) {
-            console.error("Error fetching societies:", error);
+            console.error('Error fetching societies:', error);
         }
     };
 
@@ -99,25 +86,27 @@ export  const Employee= ({ t }) => {
     const handleClickWorkhour = async (workhourId, workhourName, totalHours, employeeName, employeeFirstName) => {
         try {
             const response = await axios.get(`http://localhost:8000/api/workhourlines/${workhourId}`);
-            showWorkhourLinesModal(response.data.workhourlines, workhourName, totalHours, employeeName,employeeFirstName);
+            showWorkhourLinesModal(response.data.workhourlines, workhourName, totalHours, employeeName, employeeFirstName);
         } catch (error) {
             console.error('Error fetching workhour lines:', error);
         }
     };
-    
+
     const showWorkhourLinesModal = (workhourlines, workhourName, totalHours, employeeName, employeeFirstName) => {
-        console.log("Workhour lines data:", workhourlines);
-        const tableRows = workhourlines.map((line) =>
+        const tableRows = workhourlines
+            .map(
+                (line) => `
+                <tr>
+                    <td>${line.jour}</td>
+                    <td>${line.checkin_am}</td>
+                    <td>${line.checkout_am}</td>
+                    <td>${line.checkin_pm}</td>
+                    <td>${line.checkout_pm}</td>
+                </tr>
             `
-            <tr>
-                <td>${line.jour}</td>
-                <td>${line.checkin_am}</td>
-                <td>${line.checkout_am}</td>
-                <td>${line.checkin_pm}</td>
-                <td>${line.checkout_pm}</td>
-            </tr>
-        `).join('');
-    
+            )
+            .join('');
+
         Swal.fire({
             title: `Workhour Lines - ${workhourName} (${employeeName} ${employeeFirstName})`,
             html: `
@@ -156,59 +145,49 @@ export  const Employee= ({ t }) => {
             showConfirmButton: true,
         });
     };
-    
 
-    
     const fetchDepartments = async () => {
         try {
-            const response = await axios.get("http://localhost:8000/api/departments");
+            const response = await axios.get('http://localhost:8000/api/departments');
             setDepartments(response.data.departments);
         } catch (error) {
-            console.error("Error fetching departments:", error);
+            console.error('Error fetching departments:', error);
         }
     };
-    
+
     useEffect(() => {
         fetchDepartments();
     }, []);
-    
+
     const fetchWorkhours = async () => {
         try {
-            const response = await axios.get("http://localhost:8000/api/workhours");
+            const response = await axios.get('http://localhost:8000/api/workhours');
             setWorkhours(response.data);
         } catch (error) {
-            console.error("Error fetching work hours:", error);
+            console.error('Error fetching work hours:', error);
         }
     };
 
     useEffect(() => {
         fetchWorkhours();
-        console.log('workhours: ', workhours)
     }, []);
 
     const createEmployees = async () => {
         try {
-            const response = await axios.post("http://localhost:8000/api/employees", newEmployee);
-            setEmployees([...employees, response.data]); 
-            
-            //window.location.reload()
+            const response = await axios.post('http://localhost:8000/api/employees', newEmployee);
+            setEmployees([...employees, response.data]);
             setNewEmployee({
-                name: "",
-                firstname: "",
-                id_departments: "",
-                id_societies: "",
-                id_work_hours: "",
+                name: '',
+                firstname: '',
+                id_departments: '',
+                id_societies: '',
+                id_work_hours: '',
             });
-             toast.success('Employee created successfully');
-            //window.location.reload()
-            // toast.success('Employee created successfully')
+            toast.success('Employee created successfully');
         } catch (error) {
-            console.error("Failed to create employee:", error);
+            console.error('Failed to create employee:', error);
         }
     };
-    
-    
-    
 
     const updateEmployee = async () => {
         try {
@@ -217,54 +196,68 @@ export  const Employee= ({ t }) => {
             fetchEmployees();
             setIsEditing(null);
             setEditedEmployee({
-                name: "",
-                firstname: "",
-                id_departments: "",
-                id_societies: "",
-                id_work_hours: "",
+                name: '',
+                firstname: '',
+                id_departments: '',
+                id_societies: '',
+                id_work_hours: '',
             });
         } catch (error) {
-            console.error("Failed to update employee:", error);
+            console.error('Failed to update employee:', error);
         }
     };
-    
 
     const deleteEmployee = async (id) => {
+        try {
+            await axios.delete(`http://localhost:8000/api/employees/${id}`);
+            setEmployees(employees.filter((employee) => employee.id !== id));
+            Swal.fire('Deleted!', 'Employee has been deleted.', 'success');
+        } catch (error) {
+            console.error('Failed to delete employee:', error);
+            Swal.fire('Error!', 'Failed to delete employee.', 'error');
+        }
+    };
+
+    const toggleEmployeeSelection = (id) => {
+        if (selectedEmployees.includes(id)) {
+            setSelectedEmployees(selectedEmployees.filter((employeeId) => employeeId !== id));
+        } else {
+            setSelectedEmployees([...selectedEmployees, id]);
+        }
+    };
+
+    const deleteSelectedEmployees = async () => {
+        if (selectedEmployees.length === 0) {
+            return;
+        }
+
         Swal.fire({
             title: 'Are you sure?',
-            text: 'this action is irreversible!',
+            text: 'This action is irreversible!',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
+            confirmButtonText: 'Yes, delete them!',
             cancelButtonText: 'No, cancel!',
-            reverseButtons: true
+            reverseButtons: true,
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`http://localhost:8000/api/employees/${id}`);
-                    setEmployees(employees.filter((employee) => employee.id !== id));
-                    Swal.fire(
-                        'Deleted!',
-                        'Employee has been deleted.',
-                        'success'
-                    );
+                    await axios.delete(`http://localhost:8000/api/employees/delete`, {
+                        data: { ids: selectedEmployees },
+                    });
+                    setEmployees(employees.filter((employee) => !selectedEmployees.includes(employee.id)));
+                    setSelectedEmployees([]);
+                    Swal.fire('Deleted!', 'Employees have been deleted.', 'success');
                 } catch (error) {
-                    console.error("Failed to delete employee:", error);
-                    Swal.fire(
-                        'Error!',
-                        'Failed to delete employee.',
-                        'error'
-                    );
+                    console.error('Failed to delete employees:', error);
+                    Swal.fire('Error!', 'Failed to delete employees.', 'error');
                 }
             } else if (result.dismiss === Swal.DismissReason.cancel) {
-                Swal.fire(
-                    'Cancelled',
-                    'Employee deletion has been cancelled.',
-                    'error'
-                );
+                Swal.fire('Cancelled', 'Employee deletion has been cancelled.', 'error');
             }
         });
     };
+
     
     return (
             <Row>
@@ -340,9 +333,17 @@ export  const Employee= ({ t }) => {
                     </Form>
                     </Card>
                 </Col>
-                <Col md={7} className="bg-transparent">
-                    <Card className='department-table bg-transparent' style={{backgroundColor:'transparent',border:'none'}}>
-                    <Card.Header className='' style={{backgroundColor:'#50b64a',color:'white',textAlign:'center'}}>{t('Employee list')}</Card.Header>
+                    <Col md={7} className="bg-transparent">
+                        <Card className='department-table bg-transparent' style={{backgroundColor:'transparent',border:'none'}}>
+                        <Card.Header className="" style={{ backgroundColor: '#50b64a', color: 'white', textAlign: 'center' }}>
+                            {t('Employee list')}
+                            
+                        </Card.Header>
+                        {selectedEmployees.length > 0 && (
+                                <Button variant="danger" onClick={deleteSelectedEmployees} className="ml-2" style={{right:'0'}}>
+                                    {t('Delete selected')}
+                                </Button>
+                            )}
                     <table className='departement-table'    style={{ width: "100%", backgroundColor: "transparent" }}>
                         <thead style={{ backgroundColor: "transparent" }}>
                             <tr>
@@ -374,7 +375,19 @@ export  const Employee= ({ t }) => {
                         ) : (
                             employees.map((employee) => (
                                 <tr key={employee.id}>
-                                    
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedEmployees.includes(employee.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedEmployees([...selectedEmployees, employee.id]);
+                                                } else {
+                                                    setSelectedEmployees(selectedEmployees.filter(id => id !== employee.id));
+                                                }
+                                            }}
+                                        />
+                                    </td>
                                     <td>{employee.name}</td>
                                     <td>{employee.firstname}</td>
                                    <td><p onClick={() => handleClickWorkhour(employee.workhour?.id, employee.workhour?.nom, employee.workhour?.total_hour, employee.name, employee.firstname)} className='workhour-emp clickable'>{employee.workhour?.nom}</p></td>
