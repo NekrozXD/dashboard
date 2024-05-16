@@ -31,11 +31,11 @@ export const Home = () => {
   const toggleLanguage = () => {
     const newLanguage = i18n.language === 'fr' ? 'en' : 'fr';
     setIsLoading(true); 
-    setTimeout(() => {
-      i18n.changeLanguage(newLanguage);
+    i18n.changeLanguage(newLanguage).then(() => {
       setIsLoading(false); 
-    }, 2000);
-  };
+    });
+};
+
   
 
   const renderContent = () => {

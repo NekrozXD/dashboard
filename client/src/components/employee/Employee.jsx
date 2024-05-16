@@ -44,14 +44,6 @@ export const Employee = ({ t }) => {
 
     useEffect(() => {
         fetchEmployees();
-
-        const intervalId = setInterval(() => {
-            fetchEmployees();
-        }, 1000);
-
-        return () => {
-            clearInterval(intervalId);
-        };
     }, []);
 
     const fetchEmployees = async () => {
@@ -184,6 +176,10 @@ export const Employee = ({ t }) => {
                 id_work_hours: '',
             });
             toast.success('Employee created successfully');
+            fetchEmployees();
+            fetchWorkhours();
+            fetchDepartments();
+            fetchSocieties();
         } catch (error) {
             console.error('Failed to create employee:', error);
         }
@@ -225,12 +221,11 @@ export const Employee = ({ t }) => {
             setSelectedEmployees([...selectedEmployees, id]);
         }
     };
-
     const deleteSelectedEmployees = async () => {
         if (selectedEmployees.length === 0) {
             return;
         }
-
+    
         Swal.fire({
             title: 'Are you sure?',
             text: 'This action is irreversible!',
@@ -242,12 +237,17 @@ export const Employee = ({ t }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`http://localhost:8000/api/employees/delete`, {
-                        data: { ids: selectedEmployees },
+                    const response = await axios.delete(`http://localhost:8000/api/employees/delete`, {
+                        data: { ids: selectedEmployees }, 
                     });
-                    setEmployees(employees.filter((employee) => !selectedEmployees.includes(employee.id)));
-                    setSelectedEmployees([]);
-                    Swal.fire('Deleted!', 'Employees have been deleted.', 'success');
+    
+                    if (response.status === 200) {
+                        setEmployees(employees.filter((employee) => !selectedEmployees.includes(employee.id)));
+                        setSelectedEmployees([]);
+                        Swal.fire('Deleted!', 'Employees have been deleted.', 'success');
+                    } else {
+                        Swal.fire('Error!', 'Failed to delete employees.', 'error');
+                    }
                 } catch (error) {
                     console.error('Failed to delete employees:', error);
                     Swal.fire('Error!', 'Failed to delete employees.', 'error');
@@ -257,7 +257,6 @@ export const Employee = ({ t }) => {
             }
         });
     };
-
     
     return (
             <Row>
@@ -273,7 +272,7 @@ export const Employee = ({ t }) => {
                             <Form.Label>{t('Name')}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder={t('Name')}
+                                placeholder="Enter name"
                                 value={isEditing ? editedEmployee.name : newEmployee.name}
                                 onChange={(e) => (isEditing ? setEditedEmployee({ ...editedEmployee, name: e.target.value }) : setNewEmployee({ ...newEmployee, name: e.target.value }))}
                             />
@@ -282,7 +281,7 @@ export const Employee = ({ t }) => {
                             <Form.Label>{t('Firstname')}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder={t('Firstname')}
+                                placeholder="Enter firstame"
                                 value={isEditing ? editedEmployee.firstname : newEmployee.firstname}
                                 onChange={(e) => (isEditing ? setEditedEmployee({ ...editedEmployee, firstname: e.target.value }) : setNewEmployee({ ...newEmployee, firstname: e.target.value }))}
                             />
@@ -340,7 +339,7 @@ export const Employee = ({ t }) => {
                             
                         </Card.Header>
                         {selectedEmployees.length > 0 && (
-                                <Button variant="danger" onClick={deleteSelectedEmployees} className="ml-2" style={{right:'0'}}>
+                                <Button variant="danger" onClick={deleteSelectedEmployees} className="ml-2" widthstyle={{right:'0'}}>
                                     {t('Delete selected')}
                                 </Button>
                             )}

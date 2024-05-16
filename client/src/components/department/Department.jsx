@@ -10,6 +10,7 @@ import './departement.css';
 
 export const Department = ({t}) => {
     const [societies, setSocieties] = useState([]);
+    
     const [departments, setDepartments] = useState([]);
     const [isEditing, setIsEditing] = useState(null);
     const [newDepartment, setNewDepartment] = useState({
@@ -44,7 +45,7 @@ export const Department = ({t}) => {
             console.error("Failed to fetch departments:", error);
         }
     };
-
+    
     const fetchSocieties = async () => {
         try {
             const response = await axios.get("http://localhost:8000/api/societies");
